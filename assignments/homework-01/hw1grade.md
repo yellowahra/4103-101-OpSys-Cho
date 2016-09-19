@@ -8,12 +8,12 @@
 | 3   | sum_args runs                                     | 10      |    10     | ![Alt text][1] |
 | 4   | sum_args output correct                           | 10      |     10    | ![Alt text][1] |
 | 3   | myrandom runs                                     | 10      |     10    | ![Alt text][1] |
-| 4   | myrandom output correct                           | 10      |     5     | ![Alt text][3] |
+| 4   | myrandom output correct                           | 10      |     10    | ![Alt text][1] |
 | 3   | versiona runs                                     | 10      |      10   | ![Alt text][1] |
 | 4   | versiona output correct                           | 10      |      10   | ![Alt text][1] |
 | 3   | versionb runs                                     | 10      |      10   | ![Alt text][1] |
 | 4   | versionb output correct                           | 10      |      10   | ![Alt text][1] |
-|     | Totals:                                           | **100** |       95  | ![Alt text][1] |
+|     | Totals:                                           | **100** |      100  | ![Alt text][1] |
 ### Comments:
 ```
 thanks
