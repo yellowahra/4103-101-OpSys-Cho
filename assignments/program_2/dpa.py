@@ -1,3 +1,9 @@
+#Ahla CHO
+#Assignment_program_2
+#Implements the Arbitrator solution 
+#Limits time a philosopher can eating
+#Each philosopher gets close to equal time eating
+
 import threading
 import os
 from os import system
@@ -33,11 +39,8 @@ class CursesWindow(object):
         curses.cbreak()
         self.colors = self.loadColors()
 
-        for c in self.colors:
-            r,g,b = c['curses']
-            i = int(c['index'])
-            curses.init_color(i,r,g,b)
-            curses.init_pair(i,i,-1)
+        for c in range(0, curses.COLORS):
+			curses.init_pair(c, c, 0)
 
         self.screen.border(0)    
 
@@ -57,7 +60,6 @@ class CursesWindow(object):
             colors.append({'index':temp[0],'name':temp[1].strip(),'hex':temp[2].strip(),'curses':curses,'rgb':rgb})
 
         f.close()
-        
         return colors
     
     def getColorNames(self):
@@ -69,7 +71,7 @@ class CursesWindow(object):
     
     def cprint(self,row,col,string,color=0):
         try: 
-
+        
             self.screen.addstr(row, col, string, curses.color_pair(color))
             self.screen.addch(row, col-2, '#',curses.color_pair(color))      
         except:
@@ -80,7 +82,7 @@ class CursesWindow(object):
     
     def randomColor(self):
         """visibile colors"""
-        return random.randint(1,len(self.colors))
+        return random.randint(1,4)
         
     def getColor(self,key,val):
         
@@ -115,6 +117,8 @@ forks = []
 
 screenLock = threading.Lock()
 
+arbiterLock = threading.Lock()
+
 class Philosopher(threading.Thread):
     def __init__(self, index,window,cell):
         threading.Thread.__init__(self)
@@ -122,6 +126,7 @@ class Philosopher(threading.Thread):
         self.window = window
         self.cell = cell
         self.color = self.window.randomColor()  # Color to draw with
+        
         
 
     def run(self):
@@ -134,20 +139,21 @@ class Philosopher(threading.Thread):
         with screenLock:
             self.window.cprint(self.cell.row, self.cell.col, str(self.index),self.color)
         self.cell.col += 5
-
-        # Eat forever
+      
         while True:
-            forkPair.pickUp()
-            with screenLock:
-                self.window.cprint(self.cell.row, self.cell.col, "#" ,self.color)
-                self.cell.col += 1
-                if self.cell.col >= self.window.maxx-2:
-                    self.cell.col = 10
-                    for i in range(10,self.window.maxx-2):
-                        self.window.cprint(self.cell.row, i, "#",16)
-                time.sleep(.05)
-            time.sleep(.01)
-            forkPair.putDown()
+		#Get arbitrator
+            with arbiterLock:   
+                forkPair.pickUp()
+                with screenLock:
+                    self.window.cprint(self.cell.row, self.cell.col, "#" ,self.color)
+                    self.cell.col += 1
+                    if self.cell.col >= self.window.maxx-2:
+                        self.cell.col = 10
+                        for i in range(10,self.window.maxx-2):
+                            self.window.cprint(self.cell.row, i, "#",16)
+                    time.sleep(.05)
+                forkPair.putDown()
+            time.sleep(.1) 
 
 class ForkPair:
     def __init__(self, leftForkIndex, rightForkIndex):
